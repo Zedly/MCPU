@@ -11,17 +11,23 @@ import zedly.redavr.CPU;
  *
  * @author Dennis
  */
-public class BCLR extends Instruction {
+public class BCLR_BSET extends Instruction {
 
     private final int s;
     private final CPU cpu;
+    private final boolean set;
 
-    public BCLR(int opcode, CPU cpu) {
+    public BCLR_BSET(int opcode, CPU cpu) {
         this.cpu = cpu;
+        this.set = (opcode & 0x100) != 0;
         s = (opcode & 0b1110000) >> 4;
     }
 
     public void run() {
-        cpu.memory[CPU.SREG] &= ~(1 << s);
+        if (set) {
+            cpu.memory[CPU.SREG] |= (1 << s);
+        } else {
+            cpu.memory[CPU.SREG] &= ~(1 << s);
+        }
     }
 }
