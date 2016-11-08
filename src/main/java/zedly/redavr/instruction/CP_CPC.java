@@ -11,15 +11,15 @@ import zedly.redavr.CPU;
  *
  * @author Dennis
  */
-public class ADD_ADC extends Instruction {
+public class CP_CPC extends Instruction {
 
     private final boolean carry;
     private final int r, d;
     private final CPU cpu;
 
-    public ADD_ADC(int opcode, CPU cpu) {
+    public CP_CPC(int opcode, CPU cpu) {
         this.cpu = cpu;
-        carry = (opcode & 0x100) != 0;
+        carry = (opcode & 0x100) == 0;
         r = (opcode & 0xF) + (opcode & 0b1000000000) >> 5;
         d = (opcode & 0b111110000) >> 4;
     }
@@ -30,25 +30,19 @@ public class ADD_ADC extends Instruction {
         int rd = cpu.readByte(d);
         int status = cpu.readByte(CPU.SREG);
 
-        int sum = rr + rd;
+        int cp = rd - rr;
         if (carry) {
-            sum += status & 0x1;
+            cp -= status & 0x1;
         }
 
         status &= 0b11000000;
-
-        status |= ((sum >= 256) ? 0x1 : 0);
-        status |= ((sum == 0) ? 0x2 : 0);
-        status |= (((sum & 0x80) != 0) ? 0x4 : 0);
-        status |= ((((~sum & rr & rd & 0x40)
-                | (~rd & ~rr & sum & 0x40)) != 0) ? 0x8 : 0);
+        status |= (((0x80 & ((~rd & rr) | (rr & cp) | (cp & ~rd))) != 0)) ? 0x1 : 0;
+        status |= (cp == 0) ? (status & 0x2) : 0;
+        status |= (((cp & 0x80) != 0) ? 0x4 : 0);
+        status |= ((0x80 & ((rd & ~rr & ~cp) | (~rd & rr & cp))) != 0) ? 0x8 : 0;
         status |= (((status & 0x8) != 0) != ((status & 0x4) != 0)) ? 0x10 : 0;
-        status |= (((0x8 & rd & rr)
-                | (0x8 & ~sum & rr)
-                | (0x8 & ~sum & rd)) != 0) ? 0x20 : 0;
+        status |= ((0x8 & ((~rd & rr) | (cp & rr) | (cp & ~rd)) ) != 0) ? 0x20 : 0;
 
-        cpu.writeByte(rd, sum);
         cpu.writeByte(CPU.SREG, status);
     }
-
 }

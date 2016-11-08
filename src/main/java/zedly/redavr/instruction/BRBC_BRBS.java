@@ -31,8 +31,8 @@ public class BRBC_BRBS extends Instruction {
 
     @Override
     public void run() {
-        if (((cpu.memory[CPU.SREG] & (1 << s)) != 0) == set) {
-            cpu.PC += k;
+        if (((cpu.readByte(CPU.SREG) & (1 << s)) != 0) == set) {
+            cpu.setPC(cpu.getPC() + k);
         }
     }
 

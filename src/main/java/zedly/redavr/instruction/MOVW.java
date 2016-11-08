@@ -18,13 +18,12 @@ public class MOVW extends Instruction {
 
     public MOVW(int opcode, CPU cpu) {
         this.cpu = cpu;
-        rd = (opcode & 0xF0) >> 4;
-        rr = (opcode & 0x0F);
+        rd = 2 * (opcode & 0xF0) >> 4;
+        rr = 2 * (opcode & 0x0F);
     }
 
     public void run() {
-        cpu.memory[2 * rd] = cpu.memory[2 * rr];
-        cpu.memory[2 * rd + 1] = cpu.memory[2 * rr + 1];
+        cpu.writeShort(rd, cpu.readShort(rr));
     }
 
 }

@@ -15,11 +15,13 @@ import java.io.IOException;
  */
 public class CPU {
 
-    private static final int PROGRAM_MEMORY_SIZE = 16384;
-    private static final int SRAM_SIZE = 2048;
     private static final InstructionFactory factory;
-    private final Instruction[] program = new Instruction[PROGRAM_MEMORY_SIZE];
+    private final Instruction[] program = new Instruction[PROGRAM_MEMORY_SIZE / 2];
+    private final int[] memory = new int[2304];
+    private int PC = 0;
 
+    public static final int PROGRAM_MEMORY_SIZE = 32768;
+    public static final int SRAM_SIZE = 2048;
     public static final int IO_BASE = 32;
     public static final int XIO_BASE = 96;
     public static final int SRAM_BASE = 256;
@@ -105,10 +107,9 @@ public class CPU {
     public static final int UBRR0 = 0xC4;
     public static final int UDR0 = 0xC6;
 
-    
-    
-    public int[] memory = new int[2304];
-    public int PC = 0;
+    public CPU() {
+
+    }
 
     public int readInt(int address) {
         return readShort(address + 2) << 16
@@ -121,10 +122,42 @@ public class CPU {
     }
 
     public int readByte(int address) {
-        if (address < 0 || address > SRAM_BASE + SRAM_SIZE) {
+        if (address < 0 || address >= SRAM_BASE + SRAM_SIZE) {
             return 0;
         }
         return memory[address];
+    }
+
+    public void writeInt(int address, int value) {
+        writeShort(address, value);
+        writeShort(address + 2, value >> 16);
+    }
+
+    public void writeShort(int address, int value) {
+        writeByte(address, value);
+        writeByte(address + 1, value >> 8);
+    }
+
+    public void writeByte(int address, int value) {
+        if (address >= 0 && address < SRAM_BASE + SRAM_SIZE) {
+            memory[address] = value & 0xFF;
+        }
+    }
+
+    public int getPC() {
+        return PC;
+    }
+
+    public void setPC(int newPC) {
+        PC = newPC;
+    }
+
+    public void skip() {
+        if (program[PC].isLong()) {
+            PC += 2;
+        } else {
+            PC++;
+        }
     }
 
     public void tick() {

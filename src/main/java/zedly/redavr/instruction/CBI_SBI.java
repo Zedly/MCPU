@@ -11,23 +11,24 @@ import zedly.redavr.CPU;
  *
  * @author Dennis
  */
-public class BCLR_BSET extends Instruction {
+public class CBI_SBI extends Instruction {
 
-    private final int s;
+    private final int a, d;
     private final CPU cpu;
     private final boolean set;
 
-    public BCLR_BSET(int opcode, CPU cpu) {
+    public CBI_SBI(int opcode, CPU cpu) {
         this.cpu = cpu;
-        this.set = (opcode & 0x100) != 0;
-        s = (opcode & 0b1110000) >> 4;
+        this.set = (opcode & 0x200) != 0;
+        a = (opcode & 0b11111000) >> 3;
+        d = opcode & 0b111;
     }
 
     public void run() {
         if (set) {
-            cpu.writeByte(CPU.SREG, cpu.readByte(CPU.SREG) | (1 << s));
+            cpu.writeByte(CPU.IO_BASE + a, cpu.readByte(CPU.IO_BASE + a) | (1 << d));
         } else {
-            cpu.writeByte(CPU.SREG, cpu.readByte(CPU.SREG) & ~(1 << s));
+            cpu.writeByte(CPU.IO_BASE + a, cpu.readByte(CPU.IO_BASE + a) & ~(1 << d));
         }
     }
 }

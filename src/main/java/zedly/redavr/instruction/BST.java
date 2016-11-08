@@ -23,10 +23,10 @@ public class BST extends Instruction {
     }
 
     public void run() {
-        if ((cpu.memory[d] & ~(1 << b)) != 0) {
-            cpu.memory[CPU.SREG] |= 0b1000000;
+        if ((cpu.readByte(d) & ~(1 << b)) != 0) {
+            cpu.writeByte(CPU.SREG, cpu.readByte(CPU.SREG) | 0b1000000);
         } else {
-            cpu.memory[CPU.SREG] &= 0b10111111;
+            cpu.writeByte(CPU.SREG, cpu.readByte(CPU.SREG) & 0b10111111);
         }
     }
 }

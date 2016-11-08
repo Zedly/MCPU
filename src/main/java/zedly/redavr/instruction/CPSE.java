@@ -11,22 +11,21 @@ import zedly.redavr.CPU;
  *
  * @author Dennis
  */
-public class BLD extends Instruction {
+public class CPSE extends Instruction {
 
-    private final int b, d;
+    private final int r, d;
     private final CPU cpu;
 
-    public BLD(int opcode, CPU cpu) {
+    public CPSE(int opcode, CPU cpu) {
         this.cpu = cpu;
+        r = (opcode & 0xF) + (opcode & 0b1000000000) >> 5;
         d = (opcode & 0b111110000) >> 4;
-        b = opcode & 0b111;
     }
 
+    @Override
     public void run() {
-        if ((cpu.readByte(CPU.SREG) & 0b1000000) != 0) {
-            cpu.writeByte(d, cpu.readByte(d) | (1 << b));
-        } else {
-            cpu.writeByte(d, cpu.readByte(d) & ~(1 << b));
+        if (cpu.readByte(r) == cpu.readByte(d)) {
+            cpu.skip();
         }
     }
 }
