@@ -1,11 +1,13 @@
+package zedly.mcpu.avr;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package zedly.redavr.instruction;
 
-import zedly.redavr.CPU;
+
+import zedly.mcpu.avr.ATMega320;
 
 /**
  *
@@ -15,9 +17,9 @@ public class ADD_ADC extends Instruction {
 
     private final boolean carry;
     private final int r, d;
-    private final CPU cpu;
+    private final ATMega320 cpu;
 
-    public ADD_ADC(int opcode, CPU cpu) {
+    public ADD_ADC(int opcode, ATMega320 cpu) {
         this.cpu = cpu;
         carry = (opcode & 0x100) != 0;
         r = (opcode & 0xF) + (opcode & 0b1000000000) >> 5;
@@ -28,7 +30,7 @@ public class ADD_ADC extends Instruction {
     public void run() {
         int rr = cpu.readByte(r);
         int rd = cpu.readByte(d);
-        int status = cpu.readByte(CPU.SREG);
+        int status = cpu.readByte(ATMega320.SREG);
 
         int sum = rr + rd;
         if (carry) {
@@ -48,7 +50,7 @@ public class ADD_ADC extends Instruction {
                 | (0x8 & ~sum & rd)) != 0) ? 0x20 : 0;
 
         cpu.writeByte(rd, sum);
-        cpu.writeByte(CPU.SREG, status);
+        cpu.writeByte(ATMega320.SREG, status);
     }
 
 }

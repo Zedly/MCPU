@@ -1,30 +1,33 @@
+package zedly.mcpu.avr;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package zedly.redavr.instruction;
 
-import zedly.redavr.CPU;
+
+import zedly.mcpu.avr.ATMega320;
 
 /**
  *
  * @author Dennis
  */
-public class ANDI_CBR extends Instruction {
+public class AND extends Instruction {
 
-    private final int d, k;
-    private final CPU cpu;
+    private final int d, r;
+    private final ATMega320 cpu;
 
-    public ANDI_CBR(int opcode, CPU cpu) {
+    public AND(int opcode, ATMega320 cpu) {
         this.cpu = cpu;
-        k = (opcode & 0xF00) >> 4 + (opcode & 0xF);
-        d = 16 + (opcode & 0b11110000) >> 4;
+        r = (opcode & 0xF) + (opcode & 0b1000000000) >> 5;
+        d = (opcode & 0b111110000) >> 4;
     }
 
     public void run() {
-        int and = cpu.readByte(d) & k;
-        int status = cpu.readByte(CPU.SREG);
+
+        int and = cpu.readByte(r) & cpu.readByte(d);
+        int status = cpu.readByte(ATMega320.SREG);
 
         status &= 0b11100001;
 
@@ -33,6 +36,6 @@ public class ANDI_CBR extends Instruction {
         status |= (((status & 0x2) != 0) != ((status & 0x4) != 0)) ? 0x10 : 0;
 
         cpu.writeByte(d, and);
-        cpu.writeByte(CPU.SREG, status);
+        cpu.writeByte(ATMega320.SREG, status);
     }
 }

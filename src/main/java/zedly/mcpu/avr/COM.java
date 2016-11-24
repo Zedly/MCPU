@@ -1,11 +1,13 @@
+package zedly.mcpu.avr;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package zedly.redavr.instruction;
 
-import zedly.redavr.CPU;
+
+import zedly.mcpu.avr.ATMega320;
 
 /**
  *
@@ -14,16 +16,16 @@ import zedly.redavr.CPU;
 public class COM extends Instruction {
 
     private final int d;
-    private final CPU cpu;
+    private final ATMega320 cpu;
 
-    public COM(int opcode, CPU cpu) {
+    public COM(int opcode, ATMega320 cpu) {
         this.cpu = cpu;
         d = (opcode & 0b111110000) >> 4;
     }
 
     public void run() {
         int rd = 0xFF - cpu.readByte(d);
-        int status = cpu.readByte(CPU.SREG);
+        int status = cpu.readByte(ATMega320.SREG);
         
         status &= 0b11100000;
         status |= 0x1;
@@ -34,6 +36,6 @@ public class COM extends Instruction {
         status |= ((status & 0x2) != 0) ? 0x10 : 0;
 
         cpu.writeByte(d, rd);
-        cpu.writeByte(CPU.SREG, status);
+        cpu.writeByte(ATMega320.SREG, status);
     }
 }

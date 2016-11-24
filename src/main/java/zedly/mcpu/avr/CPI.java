@@ -1,48 +1,49 @@
+package zedly.mcpu.avr;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package zedly.redavr.instruction;
 
-import zedly.redavr.CPU;
+
+import zedly.mcpu.avr.ATMega320;
 
 /**
  *
  * @author Dennis
  */
-public class CP_CPC extends Instruction {
+public class CPI extends Instruction {
 
     private final boolean carry;
-    private final int r, d;
-    private final CPU cpu;
+    private final int k, d;
+    private final ATMega320 cpu;
 
-    public CP_CPC(int opcode, CPU cpu) {
+    public CPI(int opcode, ATMega320 cpu) {
         this.cpu = cpu;
         carry = (opcode & 0x100) == 0;
-        r = (opcode & 0xF) + (opcode & 0b1000000000) >> 5;
+        k = (opcode & 0xF) + (opcode & 0xF00) >> 4;
         d = (opcode & 0b111110000) >> 4;
     }
 
     @Override
     public void run() {
-        int rr = cpu.readByte(r);
         int rd = cpu.readByte(d);
-        int status = cpu.readByte(CPU.SREG);
+        int status = cpu.readByte(ATMega320.SREG);
 
-        int cp = rd - rr;
+        int cp = rd - k;
         if (carry) {
             cp -= status & 0x1;
         }
 
         status &= 0b11000000;
-        status |= (((0x80 & ((~rd & rr) | (rr & cp) | (cp & ~rd))) != 0)) ? 0x1 : 0;
+        status |= (((0x80 & ((~rd & k) | (k & cp) | (cp & ~rd))) != 0)) ? 0x1 : 0;
         status |= (cp == 0) ? (status & 0x2) : 0;
         status |= (((cp & 0x80) != 0) ? 0x4 : 0);
-        status |= ((0x80 & ((rd & ~rr & ~cp) | (~rd & rr & cp))) != 0) ? 0x8 : 0;
+        status |= ((0x80 & ((rd & ~k & ~cp) | (~rd & k & cp))) != 0) ? 0x8 : 0;
         status |= (((status & 0x8) != 0) != ((status & 0x4) != 0)) ? 0x10 : 0;
-        status |= ((0x8 & ((~rd & rr) | (cp & rr) | (cp & ~rd)) ) != 0) ? 0x20 : 0;
+        status |= ((0x8 & ((~rd & k) | (cp & k) | (cp & ~rd))) != 0) ? 0x20 : 0;
 
-        cpu.writeByte(CPU.SREG, status);
+        cpu.writeByte(ATMega320.SREG, status);
     }
 }

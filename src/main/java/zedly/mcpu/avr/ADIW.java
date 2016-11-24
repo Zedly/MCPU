@@ -1,11 +1,13 @@
+package zedly.mcpu.avr;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package zedly.redavr.instruction;
 
-import zedly.redavr.CPU;
+
+import zedly.mcpu.avr.ATMega320;
 
 /**
  *
@@ -14,9 +16,9 @@ import zedly.redavr.CPU;
 public class ADIW extends Instruction {
 
     private final int k, d;
-    private final CPU cpu;
+    private final ATMega320 cpu;
 
-    public ADIW(int opcode, CPU cpu) {
+    public ADIW(int opcode, ATMega320 cpu) {
         this.cpu = cpu;
         d = 24 + 2 * (opcode & 0b110000) >> 4;
         k = (opcode & 0b1111) | ((opcode & 0x11000000) >> 4);
@@ -25,7 +27,7 @@ public class ADIW extends Instruction {
     @Override
     public void run() {
         int rd = cpu.readShort(d);
-        int status = cpu.readByte(CPU.SREG);
+        int status = cpu.readByte(ATMega320.SREG);
 
         int sum = rd + k;
 
@@ -38,7 +40,7 @@ public class ADIW extends Instruction {
         status |= (((status & 0x8) != 0) != ((status & 0x4) != 0)) ? 0x10 : 0;
 
         cpu.writeShort(d, sum);
-        cpu.writeByte(CPU.SREG, status);
+        cpu.writeByte(ATMega320.SREG, status);
     }
 
 }

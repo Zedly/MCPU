@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package zedly.redavr;
+package zedly.mcpu.avr;
 
-import zedly.redavr.instruction.*;
 import java.io.DataInputStream;
 import java.io.IOException;
 
@@ -13,7 +12,7 @@ import java.io.IOException;
  *
  * @author Dennis
  */
-public class CPU {
+public class ATMega320 {
 
     private static final InstructionFactory factory;
     private final Instruction[] program = new Instruction[PROGRAM_MEMORY_SIZE / 2];
@@ -107,7 +106,7 @@ public class CPU {
     public static final int UBRR0 = 0xC4;
     public static final int UDR0 = 0xC6;
 
-    public CPU() {
+    public ATMega320() {
 
     }
 

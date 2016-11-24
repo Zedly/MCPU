@@ -3,9 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package zedly.redavr;
-
-import zedly.redavr.instruction.Instruction;
+package zedly.mcpu.avr;
 
 /**
  *
@@ -22,7 +20,7 @@ public class OpcodeMask implements InstructionFactory {
         this.one = one;
     }
 
-    public Instruction get(int opcode, CPU cpu) {
+    public Instruction get(int opcode, ATMega320 cpu) {
         if (((opcode >> maskBit) & 1) == 0) {
             return zero.get(opcode, cpu);
         } else {

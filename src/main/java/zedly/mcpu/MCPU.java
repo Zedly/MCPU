@@ -3,19 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package zedly.redavr.instruction;
+package zedly.mcpu;
+
+import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  *
  * @author Dennis
  */
-public abstract class Instruction implements Runnable {
+public class MCPU extends JavaPlugin {
     
-    public boolean isLong() {
-        return false;
-    }
     
-    public void feed(int more) {        
-    }
+    
     
 }

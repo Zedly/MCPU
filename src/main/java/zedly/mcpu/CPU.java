@@ -3,20 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package zedly.redavr.instruction;
-
-import zedly.redavr.CPU;
+package zedly.mcpu;
 
 /**
  *
  * @author Dennis
  */
-public class NOP extends Instruction {
-    
-    public NOP(int opcode, CPU cpu) {
-    }
-    
-    public void run() {
-    }
+public interface CPU {
     
 }

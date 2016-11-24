@@ -3,9 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package zedly.redavr;
-
-import zedly.redavr.instruction.Instruction;
+package zedly.mcpu.avr;
 
 /**
  *
@@ -13,6 +11,6 @@ import zedly.redavr.instruction.Instruction;
  */
 public interface InstructionFactory {
 
-    Instruction get(int opcode, CPU cpu);
+    Instruction get(int opcode, ATMega320 cpu);
 
 }
