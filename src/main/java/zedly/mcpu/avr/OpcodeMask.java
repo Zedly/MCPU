@@ -5,6 +5,8 @@
  */
 package zedly.mcpu.avr;
 
+import zedly.mcpu.Instruction;
+
 /**
  *
  * @author Dennis

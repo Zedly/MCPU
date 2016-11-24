@@ -5,6 +5,7 @@
  */
 package zedly.mcpu.avr;
 
+import zedly.mcpu.Instruction;
 import java.io.DataInputStream;
 import java.io.IOException;
 

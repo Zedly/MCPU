@@ -1,4 +1,6 @@
-package zedly.mcpu.avr;
+package zedly.mcpu;
+
+
 
 /*
  * To change this license header, choose License Headers in Project Properties.

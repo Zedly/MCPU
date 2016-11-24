@@ -7,6 +7,7 @@ package zedly.mcpu.avr;
  */
 
 
+import zedly.mcpu.Instruction;
 import zedly.mcpu.avr.ATMega320;
 
 /**

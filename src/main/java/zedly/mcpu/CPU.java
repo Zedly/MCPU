@@ -5,10 +5,24 @@
  */
 package zedly.mcpu;
 
+import java.util.UUID;
+
 /**
  *
  * @author Dennis
  */
 public interface CPU {
+    
+    void tick();
+    
+    UUID getID();
+    
+    int[] getIOStates();
+    
+    boolean[] getIODirections();
+    
+    void setProgram(Instruction[] program);
+    
+    void reset();
     
 }
